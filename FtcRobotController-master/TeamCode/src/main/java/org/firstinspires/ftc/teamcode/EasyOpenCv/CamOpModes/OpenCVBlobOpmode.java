@@ -8,10 +8,12 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.opencv.core.Core;
 import org.opencv.core.KeyPoint;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfKeyPoint;
 import org.opencv.core.MatOfPoint;
+import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -72,15 +74,16 @@ class OpenCVBlobPipeline extends OpenCvPipeline {
     MatOfKeyPoint keypoints = new MatOfKeyPoint();
     String lastError = "";
 
-    Mat tempGrayscale = new Mat();
+    Mat tempHSV = new Mat();
     Mat tempThreshold = new Mat();
 
     public Mat CvtImg2Binary(Mat input) {
 
-        Imgproc.cvtColor(input, tempThreshold, Imgproc.COLOR_RGB2GRAY);
-        Imgproc.threshold(tempThreshold, tempGrayscale, 200, 500, Imgproc.THRESH_BINARY);
-
-        return tempGrayscale;
+        //Imgproc.cvtColor(input, tempThreshold, Imgproc.COLOR_RGB2GRAY);
+        //Imgproc.threshold(tempThreshold, tempGrayscale, 200, 500, Imgproc.THRESH_BINARY);
+        Imgproc.cvtColor(input, tempHSV, Imgproc.COLOR_RGB2HSV);
+        Core.inRange(tempHSV, new Scalar(112, 80, 80), new Scalar(184, 255, 255), tempThreshold);
+        return tempThreshold;
     }
 
     public MatOfKeyPoint getKeypoints() {
@@ -100,15 +103,19 @@ class OpenCVBlobPipeline extends OpenCvPipeline {
             SimpleBlobDetector_Params params = new SimpleBlobDetector_Params();
 
             params.set_collectContours(true);
+            params.set_filterByColor(true);
             //params.set_filterByArea(true);
+            params.set_minThreshold(10);
+            params.set_maxThreshold(255);
+            params.set_minArea(20);
+            params.set_maxArea(100000);
 
             SimpleBlobDetector detector = SimpleBlobDetector.create(params);
 
             detector.detect(input, keypoints);
 
-            //Mat output = new Mat();
-
-            //drawKeypoints(input, keypoints, output);
+//            Mat output = new Mat();
+//            drawKeypoints(input, keypoints, output);
 
             System.out.println("processing requested");
         }
