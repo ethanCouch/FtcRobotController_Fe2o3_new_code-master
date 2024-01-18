@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.EasyOpenCv.AutoDirection;
 import org.firstinspires.ftc.teamcode.EasyOpenCv.CameraConstants;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 import org.opencv.core.Core;
@@ -37,8 +38,8 @@ public class OpenCVBlobOpmode extends OpMode {
      static final int STREAM_HEIGHT = 720; // modify for your camera
      OpenCvWebcam webcam;
      OpenCVBlobPipeline pipeline;
+     AutoDirection Direction;
 
-     String direction = "none";
 
      @Override
      public void init() {
@@ -68,28 +69,13 @@ public class OpenCVBlobOpmode extends OpMode {
      public void loop() {
          MatOfKeyPoint matKeypoints = pipeline.getKeypoints();
          KeyPoint[] keypoints = matKeypoints.toArray();
+
          telemetry.addData("Number of Detects", keypoints.length);
          telemetry.addData("Last Error", pipeline.lastError);
+
          for (KeyPoint key : keypoints) {
-//            telemetry.addData("Position of keypoint:", key.pt.x);
-//            telemetry.addData("Position of keypoint:", key.pt.y);
              telemetry.addData("Position of keypoint:", key.toString());
-
-             if (CameraConstants.maxRightY > key.pt.y && key.pt.y > CameraConstants.minRightY && CameraConstants.maxRightX > key.pt.x && key.pt.x > CameraConstants.minRightX)
-             {
-//                     direction = "Right";
-                     telemetry.addData("Direction:", "Right");
-             } else if (CameraConstants.maxMiddleY > key.pt.y && key.pt.y > CameraConstants.minMiddleY && CameraConstants.maxMiddleX > key.pt.x && key.pt.x > CameraConstants.minMiddleX) {
-//                     direction = "Middle";
-                     telemetry.addData("Direction:", "Middle");
-
-             } else if (CameraConstants.maxLeftY > key.pt.y && key.pt.y > CameraConstants.minLeftY && CameraConstants.maxLeftX > key.pt.x && key.pt.x > CameraConstants.minLeftX) {
-//                     direction = "left";
-                     telemetry.addData("Direction:", "left");
-             }
-             telemetry.addData("X:", key.pt.x);
-             telemetry.addData("Y:", key.pt.y);
-
+             telemetry.addData("Direction:", Direction);
          }
      }
 
@@ -100,21 +86,6 @@ public class OpenCVBlobOpmode extends OpMode {
          Mat tempHSV = new Mat();
          Mat tempThreshold = new Mat();
 
-
-         public void CreateBlobDetector(SimpleBlobDetector detector) {
-
-             SimpleBlobDetector_Params params = new SimpleBlobDetector_Params();
-
-             params.set_collectContours(true);
-//            params.set_filterByColor(true);
-             params.set_filterByArea(true);
-             params.set_minThreshold(10);
-             params.set_maxThreshold(255);
-             params.set_minArea(20);
-             params.set_maxArea(100000);
-
-             detector = SimpleBlobDetector.create(params);
-         }
 
          public Mat CvtImg2Binary(Mat input) {
 
@@ -133,33 +104,16 @@ public class OpenCVBlobOpmode extends OpMode {
              return lastError;
          }
 
-         public SimpleBlobDetector CreateBlobDetector() {
-
-             SimpleBlobDetector_Params params = new SimpleBlobDetector_Params();
-
-             params.set_collectContours(true);
-//            params.set_filterByColor(true);
-             params.set_filterByArea(true);
-             params.set_minThreshold(10);
-             params.set_maxThreshold(255);
-             params.set_minArea(30);
-             params.set_maxArea(100000);
-
-             SimpleBlobDetector detector = SimpleBlobDetector.create(params);
-
-             return detector;
-         }
-
          @Override
          public Mat processFrame(Mat input) {
              try {
+
                  input = CvtImg2Binary(input);
 
-                 CreateBlobDetector().detect(input, keypoints);
-                 sleep(200);
-
-//            Mat output = new Mat();
-//            drawKeypoints(input, keypoints, output);
+                 if (Direction == null)
+                 {
+                     processFrameGetBlob(input);
+                 }
 
                  System.out.println("processing requested");
              } catch (Exception ex) {
@@ -167,6 +121,49 @@ public class OpenCVBlobOpmode extends OpMode {
                  System.out.println("error processing");
              }
              return input;
+         }
+         public void processFrameGetBlob(Mat input)
+         {
+
+
+             //Create Blob detector
+             SimpleBlobDetector_Params params = new SimpleBlobDetector_Params();
+
+             params.set_collectContours(true);
+//           params.set_filterByColor(true);
+             params.set_filterByArea(true);
+             params.set_minThreshold(30);
+             params.set_maxThreshold(255);
+             params.set_minArea(55);
+             params.set_maxArea(100000);
+
+             SimpleBlobDetector detector = SimpleBlobDetector.create(params);
+
+             //Detect blobs
+             detector.detect(input, keypoints);
+
+             MatOfKeyPoint matKeypoints = pipeline.getKeypoints();
+             KeyPoint[] keyPoints = matKeypoints.toArray();
+
+             for (KeyPoint key : keyPoints) {
+
+                 telemetry.addData("Position of keypoint:", key.toString());
+
+                 if (CameraConstants.maxRightY > key.pt.y && key.pt.y > CameraConstants.minRightY && CameraConstants.maxRightX > key.pt.x && key.pt.x > CameraConstants.minRightX)
+                 {
+                     Direction = Direction.RIGHT;
+                 }
+                 else if (CameraConstants.maxMiddleY > key.pt.y && key.pt.y > CameraConstants.minMiddleY && CameraConstants.maxMiddleX > key.pt.x && key.pt.x > CameraConstants.minMiddleX)
+                 {
+                     Direction = Direction.MIDDLE;
+                 }
+                 else if (CameraConstants.maxLeftY > key.pt.y && key.pt.y > CameraConstants.minLeftY && CameraConstants.maxLeftX > key.pt.x && key.pt.x > CameraConstants.minLeftX)
+                 {
+                     Direction = Direction.LEFT;
+                 }
+
+             }
+
          }
      }
  }
