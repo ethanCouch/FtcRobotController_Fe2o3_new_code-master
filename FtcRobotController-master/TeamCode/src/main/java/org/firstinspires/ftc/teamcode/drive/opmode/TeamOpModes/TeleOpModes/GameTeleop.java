@@ -33,7 +33,7 @@
     Need encoders for linear slide + code for them
     Need to test all systems once robot is (theoretically) functioning
 */
-package org.firstinspires.ftc.teamcode.drive.opmode;
+package org.firstinspires.ftc.teamcode.drive.opmode.TeamOpModes.TeleOpModes;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;

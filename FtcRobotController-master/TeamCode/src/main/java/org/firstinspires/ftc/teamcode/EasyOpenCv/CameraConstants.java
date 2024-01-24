@@ -2,7 +2,15 @@ package org.firstinspires.ftc.teamcode.EasyOpenCv;
 
 // todo: fully implement crop variables
 
+import org.openftc.easyopencv.OpenCvWebcam;
+
 public class CameraConstants {
+
+
+//  Resolution
+    public static final int STREAM_WIDTH = 640; // modify for your camera
+    public static final int STREAM_HEIGHT = 360; // modify for your camera
+
 
 //  Cropping Variables
     public static int verticalCrop = 112;
@@ -15,33 +23,33 @@ public class CameraConstants {
 
     // Y
     public static int minRightY = 0;
-    public static int maxRightY = 720;
+    public static int maxRightY = STREAM_HEIGHT;
 
     // X
-    public static int minRightX = 880;
-    public static int maxRightX = 1280;
+    public static int minRightX = 427;
+    public static int maxRightX = STREAM_WIDTH;
 
 
     // middle:
 
     // Y
     public static int minMiddleY = 0;
-    public static int maxMiddleY = 720;
+    public static int maxMiddleY = STREAM_HEIGHT;
 
     // X
-    public static int minMiddleX = 400;
-    public static int maxMiddleX = 880;
+    public static int minMiddleX = 213;
+    public static int maxMiddleX = 427;
 
 
     // left:
 
     // Y
     public static int minLeftY = 0;
-    public static int maxLeftY = 720;
+    public static int maxLeftY = STREAM_HEIGHT;
 
     // X
     public static int minLeftX = 0;
-    public static int maxLeftX = 400;
+    public static int maxLeftX = 213;
 
 
 }

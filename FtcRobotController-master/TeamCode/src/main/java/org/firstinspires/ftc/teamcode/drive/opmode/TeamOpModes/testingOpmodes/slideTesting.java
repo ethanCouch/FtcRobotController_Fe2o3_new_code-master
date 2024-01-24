@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.opmode.testingOpmodes;
+package org.firstinspires.ftc.teamcode.drive.opmode.TeamOpModes.testingOpmodes;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;

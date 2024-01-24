@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.autoOpmodes;
+package org.firstinspires.ftc.teamcode.drive.opmode.TeamOpModes.autoOpmodes;
 
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -12,8 +12,8 @@ import org.firstinspires.ftc.teamcode.drive.RobotMecanumDrive;
 
 
 //!!Color thresholds need to be tuned to the field!!
-@Autonomous(name="BackboardDetectParkAuto")
-public class BackboardDetectParkAuto extends LinearOpMode {
+@Autonomous(name="FrontFacingDetectParkAuto")
+public class FrontFacingDetectParkAuto extends LinearOpMode {
 
 //    private ElapsedTime runtime = new ElapsedTime();
 //    private DcMotor leftFrontDrive = null;
@@ -42,8 +42,7 @@ public class BackboardDetectParkAuto extends LinearOpMode {
     @Override
     public void runOpMode() {
 // Initialize the hardware variables. Note that the strings used here must correspond
-// to the names assigned during the robot configuration step on the DS or RC devices.
-
+// to the names assigned during the robot configuration step on the DS or RC devices
         drive = new RobotMecanumDrive(hardwareMap, telemetry);
         SimpleOpenCVColor colorDetector = new SimpleOpenCVColor(hardwareMap, telemetry);
         colorDetector.init();
@@ -63,6 +62,7 @@ public class BackboardDetectParkAuto extends LinearOpMode {
                 .build();
         waitForStart();
 
+
         while(opModeIsActive()) {
             colorDetector.loop();
             boolean getBlue = colorDetector.getBlue();
@@ -76,14 +76,14 @@ public class BackboardDetectParkAuto extends LinearOpMode {
                 if (Blue == true) {
                     drive.followTrajectory(trajectoryForward1A);
 
-                    drive.followTrajectory(trajectoryLeft2B);
+                    drive.followTrajectory(trajectoryRight1B);
                     hasRunMovement = true;
                 }
 
                 if (Red == true) {
                     drive.followTrajectory(trajectoryForward1A);
 
-                    drive.followTrajectory(trajectoryRight1B);
+                    drive.followTrajectory(trajectoryLeft2B);
                     hasRunMovement = true;
                 }
             }

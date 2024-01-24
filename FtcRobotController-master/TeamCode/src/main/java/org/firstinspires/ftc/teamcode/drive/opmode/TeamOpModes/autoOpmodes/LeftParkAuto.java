@@ -1,5 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.autoOpmodes;
-
+package org.firstinspires.ftc.teamcode.drive.opmode.TeamOpModes.autoOpmodes;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
@@ -10,10 +9,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.EasyOpenCv.CamOpModes.SimpleOpenCVColor;
 import org.firstinspires.ftc.teamcode.drive.RobotMecanumDrive;
 
-
-//!!Color thresholds need to be tuned to the field!!
-@Autonomous(name="FrontFacingDetectParkAuto")
-public class FrontFacingDetectParkAuto extends LinearOpMode {
+@Autonomous(name="LeftParkAuto")
+public class LeftParkAuto extends LinearOpMode {
 
 //    private ElapsedTime runtime = new ElapsedTime();
 //    private DcMotor leftFrontDrive = null;
@@ -27,9 +24,6 @@ public class FrontFacingDetectParkAuto extends LinearOpMode {
     public static double DISTANCE = 10;
     public static double STRAFEDISTANCE = 90;
 
-    //Create color booleans.
-    Boolean Blue = null;
-    Boolean Red = null;
     /*
         private Encoder left = null;
 
@@ -41,12 +35,12 @@ public class FrontFacingDetectParkAuto extends LinearOpMode {
     boolean hasRunMovement = false;
     @Override
     public void runOpMode() {
-// Initialize the hardware variables. Note that the strings used here must correspond
-// to the names assigned during the robot configuration step on the DS or RC devices
-        drive = new RobotMecanumDrive(hardwareMap, telemetry);
-        SimpleOpenCVColor colorDetector = new SimpleOpenCVColor(hardwareMap, telemetry);
-        colorDetector.init();
 
+        // Initialize the hardware variables. Note that the strings used here must correspond
+        // to the names assigned during the robot configuration step on the DS or RC devices.
+        drive = new RobotMecanumDrive(hardwareMap, telemetry);
+
+        //Build Trajectories.
         Trajectory trajectoryForward1A = drive.trajectoryBuilder(new Pose2d())
                 .forward(DISTANCE)
                 .build();
@@ -57,37 +51,12 @@ public class FrontFacingDetectParkAuto extends LinearOpMode {
                 .build();
         waitForStart();
 
-        Trajectory trajectoryRight1B = drive.trajectoryBuilder(new Pose2d())
-                .strafeRight(STRAFEDISTANCE)
-                .build();
-        waitForStart();
-
-
-        while(opModeIsActive()) {
-            colorDetector.loop();
-            boolean getBlue = colorDetector.getBlue();
-            boolean getRed = colorDetector.getRed();
-            Blue = getBlue;
-            Red = getRed;
-
-
             if(!hasRunMovement) {
-
-                if (Blue == true) {
-                    drive.followTrajectory(trajectoryForward1A);
-
-                    drive.followTrajectory(trajectoryRight1B);
-                    hasRunMovement = true;
-                }
-
-                if (Red == true) {
                     drive.followTrajectory(trajectoryForward1A);
 
                     drive.followTrajectory(trajectoryLeft2B);
                     hasRunMovement = true;
-                }
-            }
 
-        }
+            }
     }
 }

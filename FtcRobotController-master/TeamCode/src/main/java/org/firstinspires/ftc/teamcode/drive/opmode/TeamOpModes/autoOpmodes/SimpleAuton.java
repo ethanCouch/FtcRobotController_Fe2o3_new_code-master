@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.autoOpmodes;
+package org.firstinspires.ftc.teamcode.drive.opmode.TeamOpModes.autoOpmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
