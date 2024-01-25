@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.EasyOpenCv.CamOpModes;
 
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -32,8 +34,9 @@ public class OpenCVBlobOpmode extends OpMode {
      OpenCvWebcam webcam;
      OpenCVBlobPipeline pipeline;
      AutoDirection Direction;
-
      RobotMecanumDrive drive;
+     double MaxArea = 50000;
+     double MinArea = 30;
 
      @Override
      public void init() {
@@ -43,7 +46,6 @@ public class OpenCVBlobOpmode extends OpMode {
          webcam = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
          pipeline = new OpenCVBlobPipeline();
          webcam.setPipeline(pipeline);
-
 
          webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
              @Override
@@ -61,25 +63,36 @@ public class OpenCVBlobOpmode extends OpMode {
 
      @Override
      public void loop() {
-//         long Time = System.currentTimeMillis();
+         long Time = System.currentTimeMillis();
 
-//         telemetry.addData("Number of Detects", keypoints.length);
+         MaxArea = MaxArea + (gamepad1.right_stick_y/10);
+         MinArea = MinArea + (gamepad1.left_stick_y/10);
+
+         MatOfKeyPoint matKeypoints = pipeline.getKeypoints();
+         KeyPoint[] keyPoints = matKeypoints.toArray();
+
+
+//         telemetry.addData("Number of Detects", keyPoints.length);
 //         telemetry.addData("Last Error", pipeline.lastError);
-//         for (KeyPoint key : keypoints) {
-////             telemetry.addData("Position of keypoint:", key.toString());
-//             telemetry.addData("Direction:", Direction);
-//         }
-//         long Time2 = System.currentTimeMillis();
 //
-//         telemetry.addData("Elapsed time:", Time2 - Time);
-//
-//         telemetry.update();
+         telemetry.addData("MinArea:",(int)MinArea);
+         telemetry.addData("MinArea:",(int)MaxArea);
+
+         for (KeyPoint key : keyPoints) {
+             telemetry.addData("Position of keypoint:", key.toString());
+             telemetry.addData("Direction:", Direction);
+         }
+         long Time2 = System.currentTimeMillis();
+
+         telemetry.addData("Elapsed time:", Time2 - Time);
+
+         telemetry.update();
      }
  }
       class OpenCVBlobPipeline extends OpenCvPipeline {
          MatOfKeyPoint keypoints = new MatOfKeyPoint();
          String lastError = "";
-
+          OpenCVBlobOpmode opmode;
          Mat tempHSV = new Mat();
          Mat tempThreshold = new Mat();
 
@@ -88,7 +101,8 @@ public class OpenCVBlobOpmode extends OpMode {
          RobotMecanumDrive drive;
 
          OpenCVBlobPipeline pipeline;
-         public Mat CvtImg2Binary(Mat input) {
+
+          public Mat CvtImg2Binary(Mat input) {
 
              //Imgproc.cvtColor(input, tempThreshold, Imgproc.COLOR_RGB2GRAY);
              //Imgproc.threshold(tempThreshold, tempGrayscale, 200, 500, Imgproc.THRESH_BINARY);
@@ -135,8 +149,8 @@ public class OpenCVBlobOpmode extends OpMode {
              params.set_filterByArea(true);
              params.set_minThreshold(25);//30
              params.set_maxThreshold(255);
-             params.set_minArea(32);//34
-             params.set_maxArea(30000);//ideal value between 25000 and 30000
+             params.set_minArea((int)opmode.MinArea);//34
+             params.set_maxArea((int)opmode.MaxArea);//ideal value between 25000 and 30000|40000
 
              SimpleBlobDetector detector = SimpleBlobDetector.create(params);
 
