@@ -26,25 +26,28 @@ import org.openftc.easyopencv.OpenCvWebcam;
 
 @Autonomous(name = "DriveAutoCamTest", group = "Test")
 public class DriveAutoCamTest extends LinearOpMode {
-    //todo: Once roadrunner is tuned, make sure to fix/tune the distance values here:
-    public static double Distance = 10;
-    public static double StrafeDistance = 90;
 
-    OpenCvWebcam webcam;
-    OpenCVAutoBlobPipeline pipeline;
-    AutoDirection Direction;
-    boolean hasRunMovement = false;
-    RobotMecanumDrive drive;
+        //todo: Once roadrunner is tuned, make sure to fix/tune the distance values here:
+        public static double Distance = 10;
+        public static double StrafeDistance = 90;
 
-    @Override
-    public void runOpMode() {
-        // Movement
-        // Initialize the hardware variables. Note that the strings used here must correspond
-        // to the names assigned during the robot configuration step on the DS or RC devices.
-        drive = new RobotMecanumDrive(hardwareMap, telemetry);
+        OpenCvWebcam webcam;
+        OpenCVAutoBlobPipeline pipeline;
+        AutoDirection Direction;
+        boolean hasRunMovement = false;
+        RobotMecanumDrive drive;
 
+        @Override
+        public void runOpMode () {
 
-        // Camera
+        init();
+        {
+            // Movement
+            // Initialize the hardware variables. Note that the strings used here must correspond
+            // to the names assigned during the robot configuration step on the DS or RC devices.
+            drive = new RobotMecanumDrive(hardwareMap, telemetry);
+
+            // Camera
             int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
             WebcamName webcamName;
             webcamName = hardwareMap.get(WebcamName.class, "Webcam 1"); // put your camera's name here
@@ -52,6 +55,7 @@ public class DriveAutoCamTest extends LinearOpMode {
             pipeline = new OpenCVAutoBlobPipeline();
             webcam.setPipeline(pipeline);
 
+            telemetry.addData("Direction", Direction);
 
             webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
                 @Override
@@ -65,10 +69,8 @@ public class DriveAutoCamTest extends LinearOpMode {
                     telemetry.update();
                 }
             });
-
-        waitForStart();
-
-       // Build Trajectories.
+        }
+        // Build Trajectories.
         Trajectory trajectoryForward1A = drive.trajectoryBuilder(new Pose2d())
                 .forward(Distance)
                 .build();
@@ -79,31 +81,35 @@ public class DriveAutoCamTest extends LinearOpMode {
                 .build();
         waitForStart();
 
-        if (!hasRunMovement && Direction == AutoDirection.RIGHT) {
-            drive.followTrajectory(trajectoryForward1A);
+        waitForStart();
 
-            drive.followTrajectory(trajectoryLeft2B);
-            hasRunMovement = true;
-            telemetry.addData("Direction:", Direction);
+        start();
+        {
+            if (!hasRunMovement && Direction == AutoDirection.RIGHT) {
+                drive.followTrajectory(trajectoryForward1A);
 
+                drive.followTrajectory(trajectoryLeft2B);
+                hasRunMovement = true;
+                telemetry.addData("Direction:", Direction);
+
+            }
+
+            if (!hasRunMovement && Direction == AutoDirection.MIDDLE) {
+                drive.followTrajectory(trajectoryForward1A);
+
+                drive.followTrajectory(trajectoryLeft2B);
+                hasRunMovement = true;
+                telemetry.addData("Direction:", Direction);
+            }
+
+            if (!hasRunMovement && Direction == AutoDirection.LEFT) {
+                drive.followTrajectory(trajectoryForward1A);
+
+                drive.followTrajectory(trajectoryLeft2B);
+                hasRunMovement = true;
+                telemetry.addData("Direction:", Direction);
+            }
         }
-
-        if (!hasRunMovement && Direction == AutoDirection.MIDDLE) {
-            drive.followTrajectory(trajectoryForward1A);
-
-            drive.followTrajectory(trajectoryLeft2B);
-            hasRunMovement = true;
-            telemetry.addData("Direction:", Direction);
-        }
-
-        if (!hasRunMovement && Direction == AutoDirection.LEFT) {
-            drive.followTrajectory(trajectoryForward1A);
-
-            drive.followTrajectory(trajectoryLeft2B);
-            hasRunMovement = true;
-            telemetry.addData("Direction:", Direction);
-        }
-
     }
 }
 
@@ -117,7 +123,8 @@ public class DriveAutoCamTest extends LinearOpMode {
 
         OpenCVAutoBlobPipeline pipeline;
 
-        public Mat CvtImg2Binary(Mat input) {
+        public Mat CvtImg2Binary(Mat input)
+        {
 
             //Imgproc.cvtColor(input, tempThreshold, Imgproc.COLOR_RGB2GRAY);
             //Imgproc.threshold(tempThreshold, tempGrayscale, 200, 500, Imgproc.THRESH_BINARY);
@@ -126,33 +133,39 @@ public class DriveAutoCamTest extends LinearOpMode {
             return tempThreshold;
         }
 
-        public MatOfKeyPoint getKeypoints() {
+        public MatOfKeyPoint getKeypoints()
+        {
             return keypoints;
         }
 
-        public String getLastError() {
+        public String getLastError()
+        {
             return lastError;
         }
 
         @Override
-        public Mat processFrame(Mat input) {
+        public Mat processFrame(Mat input)
+        {
             try {
 
                 input = CvtImg2Binary(input);
 
-                if (Direction == null) {
+                if (Direction == null)
+                {
                     processFrameGetBlob(input);
                 }
 
                 System.out.println("processing requested");
-            } catch (Exception ex) {
+            } catch (Exception ex)
+            {
                 lastError = ex.getMessage();
                 System.out.println("error processing");
             }
             return input;
         }
 
-        public void processFrameGetBlob(Mat input) {
+        public void processFrameGetBlob(Mat input)
+        {
 
 
             //Create Blob detector
@@ -174,13 +187,17 @@ public class DriveAutoCamTest extends LinearOpMode {
             MatOfKeyPoint matKeypoints = pipeline.getKeypoints();
             KeyPoint[] keyPoints = matKeypoints.toArray();
 
-            for (KeyPoint key : keyPoints) {
+            for (KeyPoint key : keyPoints)
+            {
 
-                if (CameraConstants.maxRightY > key.pt.y && key.pt.y > CameraConstants.minRightY && CameraConstants.maxRightX > key.pt.x && key.pt.x > CameraConstants.minRightX) {
+                if (CameraConstants.maxRightY > key.pt.y && key.pt.y > CameraConstants.minRightY && CameraConstants.maxRightX > key.pt.x && key.pt.x > CameraConstants.minRightX)
+                {
                     Direction = AutoDirection.RIGHT;
-                } else if (CameraConstants.maxMiddleY > key.pt.y && key.pt.y > CameraConstants.minMiddleY && CameraConstants.maxMiddleX > key.pt.x && key.pt.x > CameraConstants.minMiddleX) {
+                } else if (CameraConstants.maxMiddleY > key.pt.y && key.pt.y > CameraConstants.minMiddleY && CameraConstants.maxMiddleX > key.pt.x && key.pt.x > CameraConstants.minMiddleX)
+                {
                     Direction = AutoDirection.MIDDLE;
-                } else if (CameraConstants.maxLeftY > key.pt.y && key.pt.y > CameraConstants.minLeftY && CameraConstants.maxLeftX > key.pt.x && key.pt.x > CameraConstants.minLeftX) {
+                } else if (CameraConstants.maxLeftY > key.pt.y && key.pt.y > CameraConstants.minLeftY && CameraConstants.maxLeftX > key.pt.x && key.pt.x > CameraConstants.minLeftX)
+                {
                     Direction = AutoDirection.LEFT;
                 }
             }

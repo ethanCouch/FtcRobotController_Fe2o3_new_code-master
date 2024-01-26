@@ -23,7 +23,7 @@ public class CameraConstants {
 
     // Y
     public static int minRightY = 0;
-    public static int maxRightY = STREAM_HEIGHT;
+    public static int maxRightY = 120/*STREAM_HEIGHT*/;
 
     // X
     public static int minRightX = 427;
@@ -34,7 +34,7 @@ public class CameraConstants {
 
     // Y
     public static int minMiddleY = 0;
-    public static int maxMiddleY = STREAM_HEIGHT;
+    public static int maxMiddleY = 120/*STREAM_HEIGHT*/;
 
     // X
     public static int minMiddleX = 213;
@@ -45,7 +45,7 @@ public class CameraConstants {
 
     // Y
     public static int minLeftY = 0;
-    public static int maxLeftY = STREAM_HEIGHT;
+    public static int maxLeftY = 120/*STREAM_HEIGHT*/;
 
     // X
     public static int minLeftX = 0;

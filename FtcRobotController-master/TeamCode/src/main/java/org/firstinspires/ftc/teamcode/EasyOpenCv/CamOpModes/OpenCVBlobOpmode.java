@@ -1,10 +1,6 @@
 package org.firstinspires.ftc.teamcode.EasyOpenCv.CamOpModes;
 
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
-
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -34,7 +30,6 @@ public class OpenCVBlobOpmode extends OpMode {
      OpenCvWebcam webcam;
      OpenCVBlobPipeline pipeline;
      AutoDirection Direction;
-     RobotMecanumDrive drive;
      double MaxArea = 50000;
      double MinArea = 30;
 
@@ -65,8 +60,8 @@ public class OpenCVBlobOpmode extends OpMode {
      public void loop() {
          long Time = System.currentTimeMillis();
 
-         MaxArea = MaxArea + (gamepad1.right_stick_y/10);
-         MinArea = MinArea + (gamepad1.left_stick_y/10);
+//         MaxArea = MaxArea + (gamepad1.right_stick_y/10);
+//         MinArea = MinArea + (gamepad1.left_stick_y/10);
 
          MatOfKeyPoint matKeypoints = pipeline.getKeypoints();
          KeyPoint[] keyPoints = matKeypoints.toArray();
@@ -75,16 +70,30 @@ public class OpenCVBlobOpmode extends OpMode {
 //         telemetry.addData("Number of Detects", keyPoints.length);
 //         telemetry.addData("Last Error", pipeline.lastError);
 //
-         telemetry.addData("MinArea:",(int)MinArea);
-         telemetry.addData("MinArea:",(int)MaxArea);
+//         telemetry.addData("MinArea:",(int)MinArea);
+//         telemetry.addData("MinArea:",(int)MaxArea);
 
          for (KeyPoint key : keyPoints) {
              telemetry.addData("Position of keypoint:", key.toString());
+
+             if (CameraConstants.maxRightY > key.pt.y && key.pt.y > CameraConstants.minRightY && CameraConstants.maxRightX > key.pt.x && key.pt.x > CameraConstants.minRightX)
+             {
+                 Direction = AutoDirection.RIGHT;
+             }
+             else if (CameraConstants.maxMiddleY > key.pt.y && key.pt.y > CameraConstants.minMiddleY && CameraConstants.maxMiddleX > key.pt.x && key.pt.x > CameraConstants.minMiddleX)
+             {
+                 Direction = AutoDirection.MIDDLE;
+             }
+             else if (CameraConstants.maxLeftY > key.pt.y && key.pt.y > CameraConstants.minLeftY && CameraConstants.maxLeftX > key.pt.x && key.pt.x > CameraConstants.minLeftX)
+             {
+                 Direction = AutoDirection.LEFT;
+             }
+
              telemetry.addData("Direction:", Direction);
          }
          long Time2 = System.currentTimeMillis();
 
-         telemetry.addData("Elapsed time:", Time2 - Time);
+//         telemetry.addData("Elapsed time:", Time2 - Time);
 
          telemetry.update();
      }
@@ -149,32 +158,32 @@ public class OpenCVBlobOpmode extends OpMode {
              params.set_filterByArea(true);
              params.set_minThreshold(25);//30
              params.set_maxThreshold(255);
-             params.set_minArea((int)opmode.MinArea);//34
-             params.set_maxArea((int)opmode.MaxArea);//ideal value between 25000 and 30000|40000
+             params.set_minArea(20);//34|(int)opmode.MinArea
+             params.set_maxArea(50000);//ideal value between 25000 and 30000|40000|(int)opmode.MaxArea|50000
 
              SimpleBlobDetector detector = SimpleBlobDetector.create(params);
 
              //Detect blobs
              detector.detect(input, keypoints);
-
-             MatOfKeyPoint matKeypoints = pipeline.getKeypoints();
-             KeyPoint[] keyPoints = matKeypoints.toArray();
-
-             for (KeyPoint key : keyPoints) {
-
-                 if (CameraConstants.maxRightY > key.pt.y && key.pt.y > CameraConstants.minRightY && CameraConstants.maxRightX > key.pt.x && key.pt.x > CameraConstants.minRightX)
-                 {
-                     Direction = Direction.RIGHT;
-                 }
-                 else if (CameraConstants.maxMiddleY > key.pt.y && key.pt.y > CameraConstants.minMiddleY && CameraConstants.maxMiddleX > key.pt.x && key.pt.x > CameraConstants.minMiddleX)
-                 {
-                     Direction = Direction.MIDDLE;
-                 }
-                 else if (CameraConstants.maxLeftY > key.pt.y && key.pt.y > CameraConstants.minLeftY && CameraConstants.maxLeftX > key.pt.x && key.pt.x > CameraConstants.minLeftX)
-                 {
-                     Direction = Direction.LEFT;
-                 }
-             }
+//
+//             MatOfKeyPoint matKeypoints = pipeline.getKeypoints();
+//             KeyPoint[] keyPoints = matKeypoints.toArray();
+//
+//             for (KeyPoint key : keyPoints) {
+//
+//                 if (CameraConstants.maxRightY > key.pt.y && key.pt.y > CameraConstants.minRightY && CameraConstants.maxRightX > key.pt.x && key.pt.x > CameraConstants.minRightX)
+//                 {
+//                     Direction = Direction.RIGHT;
+//                 }
+//                 else if (CameraConstants.maxMiddleY > key.pt.y && key.pt.y > CameraConstants.minMiddleY && CameraConstants.maxMiddleX > key.pt.x && key.pt.x > CameraConstants.minMiddleX)
+//                 {
+//                     Direction = Direction.MIDDLE;
+//                 }
+//                 else if (CameraConstants.maxLeftY > key.pt.y && key.pt.y > CameraConstants.minLeftY && CameraConstants.maxLeftX > key.pt.x && key.pt.x > CameraConstants.minLeftX)
+//                 {
+//                     Direction = Direction.LEFT;
+//                 }
+//             }
 
 
          }
