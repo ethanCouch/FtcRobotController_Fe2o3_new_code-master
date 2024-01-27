@@ -4,9 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.EasyOpenCv.CamOpModes.SimpleOpenCVColor;
 import org.firstinspires.ftc.teamcode.drive.RobotMecanumDrive;
 
 @Autonomous(name="LeftParkAuto")
@@ -40,7 +38,7 @@ public class LeftParkAuto extends LinearOpMode {
         // to the names assigned during the robot configuration step on the DS or RC devices.
         drive = new RobotMecanumDrive(hardwareMap, telemetry);
 
-        //Build Trajectories.
+        // Build Trajectories.
         Trajectory trajectoryForward1A = drive.trajectoryBuilder(new Pose2d())
                 .forward(DISTANCE)
                 .build();
@@ -51,9 +49,12 @@ public class LeftParkAuto extends LinearOpMode {
                 .build();
         waitForStart();
 
+        // If the robot hasn't run movement, then run movement
             if(!hasRunMovement) {
+                // Drive forward to get off of the wall
                     drive.followTrajectory(trajectoryForward1A);
 
+                // Drive left to park
                     drive.followTrajectory(trajectoryLeft2B);
                     hasRunMovement = true;
 
