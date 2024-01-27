@@ -36,6 +36,7 @@
 package org.firstinspires.ftc.teamcode.drive.opmode.TeamOpModes.TeleOpModes;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -45,7 +46,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-
+@Disabled
 @TeleOp(name="Game Opmode", group="Linear Opmode")
 //@Disabled
 public class GameTeleop extends LinearOpMode {

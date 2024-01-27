@@ -4,13 +4,14 @@ package org.firstinspires.ftc.teamcode.drive.opmode.TeamOpModes.autoOpmodes;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.EasyOpenCv.CamOpModes.SimpleOpenCVColor;
 import org.firstinspires.ftc.teamcode.drive.RobotMecanumDrive;
 
-
+@Disabled
 //!!Color thresholds need to be tuned to the field!!
 @Autonomous(name="BackboardDetectParkAuto")
 public class BackboardDetectParkAuto extends LinearOpMode {

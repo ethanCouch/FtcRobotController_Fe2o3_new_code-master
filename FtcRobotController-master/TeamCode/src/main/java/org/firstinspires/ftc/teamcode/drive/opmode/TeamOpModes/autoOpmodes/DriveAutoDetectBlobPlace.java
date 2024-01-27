@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.opmode.TeamOpModes.testingOpmodes;
+package org.firstinspires.ftc.teamcode.drive.opmode.TeamOpModes.autoOpmodes;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;

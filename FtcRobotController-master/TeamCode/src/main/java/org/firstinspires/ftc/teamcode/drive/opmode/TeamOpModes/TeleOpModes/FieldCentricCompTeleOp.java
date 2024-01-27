@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive.opmode.TeamOpModes.TeleOpModes;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -9,6 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
+@Disabled
 @TeleOp(name="Field Centric Competition TeleOp", group="Linear Opmode")
 //@Disabled
 public class FieldCentricCompTeleOp extends LinearOpMode {

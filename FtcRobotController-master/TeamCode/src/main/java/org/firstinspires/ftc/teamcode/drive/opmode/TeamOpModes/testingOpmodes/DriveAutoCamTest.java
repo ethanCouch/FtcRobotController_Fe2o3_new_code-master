@@ -4,13 +4,16 @@ package org.firstinspires.ftc.teamcode.drive.opmode.TeamOpModes.testingOpmodes;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.EasyOpenCv.AutoDirection;
 import org.firstinspires.ftc.teamcode.EasyOpenCv.CamOpModes.OpenCVBlob;
 import org.firstinspires.ftc.teamcode.drive.RobotMecanumDrive;
 
+@Disabled
 /*Test OpMode that will detect an object, find its relative position in relation to the camera, and park.*/
 @Autonomous(name="DriveAutoCamTest", group = "test")
 public class DriveAutoCamTest extends LinearOpMode
@@ -26,10 +29,12 @@ public class DriveAutoCamTest extends LinearOpMode
     AutoDirection Direction = null;
 
     boolean hasRunMovement = false;
+    private DcMotor intakeMotor = null;
 
     @Override
     public void runOpMode()
     {
+        intakeMotor.setPower(0);
 
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
@@ -69,6 +74,12 @@ public class DriveAutoCamTest extends LinearOpMode
 
                 if (Direction == AutoDirection.RIGHT)
                 {
+
+                    intakeMotor.setPower(-1);
+                    sleep(10000);
+
+                    intakeMotor.setPower(0);
+                    sleep(10000);
 
                     // Follow trajectories
                     drive.followTrajectory(trajectoryForward1A);

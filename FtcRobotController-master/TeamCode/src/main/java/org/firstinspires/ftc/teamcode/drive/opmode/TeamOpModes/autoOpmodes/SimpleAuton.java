@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive.opmode.TeamOpModes.autoOpmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -8,7 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 //!! Note: Does Not work, Pls fix and test this program before running (Ethan) !!
 //todo: fix null pointer exception
-
+@Disabled
 @Autonomous(name="SimpleAuton")
 public class SimpleAuton extends LinearOpMode {
 
