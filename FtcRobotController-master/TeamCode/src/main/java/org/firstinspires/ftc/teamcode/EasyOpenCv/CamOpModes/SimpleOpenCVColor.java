@@ -23,7 +23,6 @@ public class SimpleOpenCVColor {
     OpenCvWebcam webcam;
     SimpleOpenCVColorPipeline pipeline;
 
-
     private boolean Blue = false;
 
     private boolean Red = false;
