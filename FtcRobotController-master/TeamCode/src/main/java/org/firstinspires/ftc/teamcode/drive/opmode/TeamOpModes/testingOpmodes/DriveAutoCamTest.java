@@ -11,38 +11,35 @@ import org.firstinspires.ftc.teamcode.EasyOpenCv.AutoDirection;
 import org.firstinspires.ftc.teamcode.EasyOpenCv.CamOpModes.OpenCVBlob;
 import org.firstinspires.ftc.teamcode.drive.RobotMecanumDrive;
 
-
+/*Test OpMode that will detect an object, find its relative position in relation to the camera, and park.*/
 @Autonomous(name="DriveAutoCamTest", group = "test")
-public class DriveAutoCamTest extends LinearOpMode {
+public class DriveAutoCamTest extends LinearOpMode
+{
     private ElapsedTime runtime = new ElapsedTime();
     RobotMecanumDrive drive;
 
     //todo: Once roadrunner is tuned, make sure to fix/tune the distance values here:
     public static double DISTANCE = 10;
-    public static double MIDDLEDISTANCE = 20;
     public static double STRAFEDISTANCE = 90;
-    public static double PARKDISTANCE = 90;
 
     //Create color booleans.
     AutoDirection Direction = null;
-    /*
-        private Encoder left = null;
-
-        private Encoder right = null;
-
-        private Encoder back = null;
-        */
 
     boolean hasRunMovement = false;
-    @Override
-    public void runOpMode() {
-// Initialize the hardware variables. Note that the strings used here must correspond
-// to the names assigned during the robot configuration step on the DS or RC devices.
 
+    @Override
+    public void runOpMode()
+    {
+
+        // Initialize the hardware variables. Note that the strings used here must correspond
+        // to the names assigned during the robot configuration step on the DS or RC devices.
         drive = new RobotMecanumDrive(hardwareMap, telemetry);
+
+        // Initialize the blobDetector
         OpenCVBlob blobDetector = new OpenCVBlob(hardwareMap, telemetry);
         blobDetector.init();
 
+        // Build trajectories
         Trajectory trajectoryForward1A = drive.trajectoryBuilder(new Pose2d())
                 .forward(DISTANCE)
                 .build();
@@ -60,43 +57,64 @@ public class DriveAutoCamTest extends LinearOpMode {
 
         runtime.reset();
 
-        while(opModeIsActive()) {
+        while (opModeIsActive())
+        {
             blobDetector.loop();
             AutoDirection getDirection = blobDetector.getDirection();
             Direction = getDirection;
 
-            if (!hasRunMovement) {
+            // If the robot hasn't run movement, then run movement
+            if (!hasRunMovement && runtime.seconds() < 20)
+            {
 
-                if (Direction == AutoDirection.RIGHT) {
+                if (Direction == AutoDirection.RIGHT)
+                {
+
+                    // Follow trajectories
                     drive.followTrajectory(trajectoryForward1A);
-
                     drive.followTrajectory(trajectoryLeft2B);
+
+                    // After all of the trajectories have been run then set hasRunMovement to true
+                    // and print Direction
                     hasRunMovement = true;
-                    telemetry.addData("Direction:",Direction);
+                    telemetry.addData("Direction:", Direction);
                 }
-              else if(Direction==AutoDirection.MIDDLE){
+                else if (Direction == AutoDirection.MIDDLE)
+                {
+
+                    // Follow trajectories
                     drive.followTrajectory(trajectoryForward1A);
-
                     drive.followTrajectory(trajectoryLeft2B);
-                    hasRunMovement=true;
-                    telemetry.addData("Direction:",Direction);
-                }
 
-             else if(Direction==AutoDirection.LEFT){
-                    drive.followTrajectory(trajectoryForward1A);
-
-                    drive.followTrajectory(trajectoryLeft2B);
+                    // After all of the trajectories have been run then set hasRunMovement to true
+                    // and print Direction
                     hasRunMovement = true;
-                    telemetry.addData("Direction:",Direction);
+                    telemetry.addData("Direction:", Direction);
+                }
+                else if (Direction == AutoDirection.LEFT)
+                {
+
+                    // Follow trajectories
+                    drive.followTrajectory(trajectoryForward1A);
+                    drive.followTrajectory(trajectoryLeft2B);
+
+                    // After all of the trajectories have been run then set hasRunMovement to true
+                    // and print Direction
+                    hasRunMovement = true;
+                    telemetry.addData("Direction:", Direction);
                 }
             }
-            else if (runtime.seconds() > 10 && Direction == AutoDirection.NONE)
+            else if (!hasRunMovement && runtime.seconds() > 20)
             {
-                drive.followTrajectory(trajectoryForward1A);
 
-                drive.followTrajectory(trajectoryRight1B);
-                hasRunMovement=true;
-                telemetry.addData("Direction:",Direction);
+                // Follow trajectories
+                drive.followTrajectory(trajectoryForward1A);
+                drive.followTrajectory(trajectoryLeft2B);
+
+                // After all of the trajectories have been run then set hasRunMovement to true
+                // and print Direction
+                hasRunMovement = true;
+                telemetry.addData("Direction:", "NONE");
             }
 
         }

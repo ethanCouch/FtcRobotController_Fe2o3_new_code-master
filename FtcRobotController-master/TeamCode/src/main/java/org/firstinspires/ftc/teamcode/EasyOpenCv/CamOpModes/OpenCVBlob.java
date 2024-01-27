@@ -101,10 +101,6 @@ public class OpenCVBlob extends OpMode {
             {
                 Direction = AutoDirection.LEFT;
             }
-            else
-            {
-                Direction = AutoDirection.NONE;
-            }
 
             telemetry.addData("Direction:", getDirection());
         }
