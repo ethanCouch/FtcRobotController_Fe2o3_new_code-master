@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.checkerframework.checker.units.qual.A;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.EasyOpenCv.AutoDirection;
@@ -17,7 +16,10 @@ import org.opencv.core.KeyPoint;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfKeyPoint;
 
+import org.opencv.core.MatOfPoint;
+import org.opencv.core.Point;
 import org.opencv.core.Scalar;
+import org.opencv.features2d.Features2d;
 import org.opencv.features2d.SimpleBlobDetector;
 import org.opencv.features2d.SimpleBlobDetector_Params;
 import org.opencv.imgproc.Imgproc;
@@ -25,7 +27,10 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
+import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvWebcam;
+
+import java.util.List;
 
 @TeleOp (name = "OpenCVBlobOpmode")
 public class OpenCVBlob extends OpMode {
@@ -37,7 +42,6 @@ public class OpenCVBlob extends OpMode {
     AutoDirection Direction;
 //     double MaxArea = 50000;
 //     double MinArea = 30;
-
 
     public OpenCVBlob(HardwareMap map, Telemetry tele)
     {
@@ -79,6 +83,8 @@ public class OpenCVBlob extends OpMode {
         MatOfKeyPoint matKeypoints = pipeline.getKeypoints();
         KeyPoint[] keyPoints = matKeypoints.toArray();
 
+//        List<MatOfPoint> blobContours = pipeline.getBlobContours();
+
 
 //         telemetry.addData("Number of Detects", keyPoints.length);
 //         telemetry.addData("Last Error", pipeline.lastError);
@@ -87,6 +93,9 @@ public class OpenCVBlob extends OpMode {
 //         telemetry.addData("MinArea:",(int)MaxArea);
 
         for (KeyPoint key : keyPoints) {
+
+//            telemetry.addData("Contours:", blobContours);
+
             telemetry.addData("Position of keypoint:", key.toString());
 
             if (CameraConstants.maxRightY > key.pt.y && key.pt.y > CameraConstants.minRightY && CameraConstants.maxRightX > key.pt.x && key.pt.x > CameraConstants.minRightX)
@@ -115,6 +124,8 @@ public class OpenCVBlob extends OpMode {
 }
      class OpenCVBlobPipeline extends OpenCvPipeline {
         MatOfKeyPoint keypoints = new MatOfKeyPoint();
+
+        List<MatOfPoint> blobContours;
         String lastError = "";
 //        OpenCVBlob opmode;
         Mat tempHSV = new Mat();
@@ -125,6 +136,8 @@ public class OpenCVBlob extends OpMode {
         RobotMecanumDrive drive;
 
         OpenCVBlobPipeline pipeline;
+
+
 
         public Mat CvtImg2Binary(Mat input) {
 
@@ -138,6 +151,10 @@ public class OpenCVBlob extends OpMode {
         public MatOfKeyPoint getKeypoints() {
             return keypoints;
         }
+
+         public List<MatOfPoint> getBlobContours() {
+             return blobContours;
+         }
 
         public String getLastError() {
             return lastError;
@@ -169,6 +186,9 @@ public class OpenCVBlob extends OpMode {
 
     //             params.set_collectContours(true);
     //             params.set_filterByColor(true);
+            params.set_filterByInertia(true);
+//            params.set_maxInertiaRatio(0.99F);
+            params.set_minInertiaRatio(0.1F);
             params.set_filterByArea(true);
             params.set_minThreshold(25);//30
             params.set_maxThreshold(255);
@@ -179,27 +199,8 @@ public class OpenCVBlob extends OpMode {
 
             //Detect blobs
             detector.detect(input, keypoints);
-    //
-    //             MatOfKeyPoint matKeypoints = pipeline.getKeypoints();
-    //             KeyPoint[] keyPoints = matKeypoints.toArray();
-    //
-    //             for (KeyPoint key : keyPoints) {
-    //
-    //                 if (CameraConstants.maxRightY > key.pt.y && key.pt.y > CameraConstants.minRightY && CameraConstants.maxRightX > key.pt.x && key.pt.x > CameraConstants.minRightX)
-    //                 {
-    //                     Direction = Direction.RIGHT;
-    //                 }
-    //                 else if (CameraConstants.maxMiddleY > key.pt.y && key.pt.y > CameraConstants.minMiddleY && CameraConstants.maxMiddleX > key.pt.x && key.pt.x > CameraConstants.minMiddleX)
-    //                 {
-    //                     Direction = Direction.MIDDLE;
-    //                 }
-    //                 else if (CameraConstants.maxLeftY > key.pt.y && key.pt.y > CameraConstants.minLeftY && CameraConstants.maxLeftX > key.pt.x && key.pt.x > CameraConstants.minLeftX)
-    //                 {
-    //                     Direction = Direction.LEFT;
-    //                 }
-    //             }
 
-
+            blobContours = detector.getBlobContours();
         }
     }
 
